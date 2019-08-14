@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Recolize GmbH
+ *
+ * @section LICENSE
+ * This source file is subject to the GNU General Public License Version 3 (GPLv3).
+ *
+ * @category Recolize
+ * @package Recolize_RecommendationEngine
+ * @author Recolize GmbH <service@recolize.com>
+ * @copyright 2015 Recolize GmbH (http://www.recolize.com)
+ * @license http://opensource.org/licenses/GPL-3.0 GNU General Public License Version 3 (GPLv3).
+ */
+//-->
+<config>
+    <modules>
+        <Recolize_RecommendationEngine>
+            <version>2.0.0</version>
+        </Recolize_RecommendationEngine>
+    </modules>
+    <global>
+        <resources>
+            <recolize_recommendation_engine_setup>
+                <setup>
+                    <module>Recolize_RecommendationEngine</module>
+                </setup>
+            </recolize_recommendation_engine_setup>
+        </resources>
+        <models>
+            <recolize_recommendation_engine>
+                <class>Recolize_RecommendationEngine_Model</class>
+            </recolize_recommendation_engine>
+        </models>
+        <helpers>
+            <recolize_recommendation_engine>
+                <class>Recolize_RecommendationEngine_Helper</class>
+            </recolize_recommendation_engine>
+        </helpers>
+        <blocks>
+            <recolize_recommendation_engine>
+                <class>Recolize_RecommendationEngine_Block</class>
+            </recolize_recommendation_engine>
+        </blocks>
+    </global>
+    <frontend>
+        <layout>
+            <updates>
+                <recolize_recommendation_engine>
+                    <file>recolize_recommendation_engine.xml</file>
+                </recolize_recommendation_engine>
+            </updates>
+        </layout>
+        <events>
+            <checkout_cart_product_add_after>
+                <observers>
+                    <recolize_recommendation_engine_product_add_to_cart>
+                        <type>singleton</type>
+                        <class>recolize_recommendation_engine/observer</class>
+                        <method>addToCart</method>
+                    </recolize_recommendation_engine_product_add_to_cart>
+                </observers>
+            </checkout_cart_product_add_after>
+        </events>
+    </frontend>
+    <adminhtml>
+        <translate>
+            <modules>
+                <Recolize_RecommendationEngine>
+                    <files>
+                        <default>Recolize_RecommendationEngine.csv</default>
+                    </files>
+                </Recolize_RecommendationEngine>
+            </modules>
+        </translate>
+        <layout>
+            <updates>
+                <recolize_recommendation_engine>
+                    <file>recolize_recommendation_engine.xml</file>
+                </recolize_recommendation_engine>
+            </updates>
+        </layout>
+    </adminhtml>
+    <default>
+        <recolize_recommendation_engine>
+            <general>
+                <enable_extension>1</enable_extension>
+            </general>
+            <product_feed>
+                <enable_export>1</enable_export>
+                <cron_schedule>34 3 * * *</cron_schedule>
+            </product_feed>
+        </recolize_recommendation_engine>
+        <general>
+            <file>
+                <importexport_local_valid_paths>
+                    <available>
+                        <media_csv>media/*.csv</media_csv>
+                    </available>
+                </importexport_local_valid_paths>
+            </file>
+        </general>
+    </default>
+    <crontab>
+        <jobs>
+            <recolize_recommendation_engine_cronjob>
+                <schedule>
+                    <config_path>recolize_recommendation_engine/product_feed/cron_schedule</config_path>
+                </schedule>
+                <run>
+                    <model>recolize_recommendation_engine/feed::generate</model>
+                </run>
+            </recolize_recommendation_engine_cronjob>
+        </jobs>
+    </crontab>
+</config>

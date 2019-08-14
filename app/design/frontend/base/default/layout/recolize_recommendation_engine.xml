@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Recolize GmbH
+ *
+ * @section LICENSE
+ * This source file is subject to the GNU General Public License Version 3 (GPLv3).
+ *
+ * @category Recolize
+ * @package Recolize_RecommendationEngine
+ * @author Recolize GmbH <service@recolize.com>
+ * @copyright 2015 Recolize GmbH (http://www.recolize.com)
+ * @license http://opensource.org/licenses/GPL-3.0 GNU General Public License Version 3 (GPLv3).
+ */
+//-->
+<layout>
+    <default>
+        <reference name="after_body_start">
+            <block type="core/template" name="recolize.recommendation.engine.javascript.snippet" template="recolize/recommendation_engine/javascript_snippet.phtml" before="-" />
+            <block type="core/template" name="recolize.recommendation.engine.add.to.cart" template="recolize/recommendation_engine/add_to_cart.phtml" before="-" />
+        </reference>
+    </default>
+
+    <catalog_category_view>
+        <reference name="after_body_start">
+            <block type="core/template" name="recolize.recommendation.engine.category.view" template="recolize/recommendation_engine/category_view.phtml" before="-" />
+        </reference>
+    </catalog_category_view>
+
+    <catalog_product_view>
+        <reference name="after_body_start">
+            <block type="core/template" name="recolize.recommendation.engine.product.view" template="recolize/recommendation_engine/product_view.phtml" before="-" />
+        </reference>
+    </catalog_product_view>
+
+    <checkout_onepage_success>
+        <reference name="after_body_start">
+            <block type="core/template" name="recolize.recommendation.engine.checkout.success" template="recolize/recommendation_engine/checkout_success.phtml" before="-" />
+        </reference>
+    </checkout_onepage_success>
+</layout>

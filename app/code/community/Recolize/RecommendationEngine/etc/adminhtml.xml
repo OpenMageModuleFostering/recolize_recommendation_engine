@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Recolize GmbH
+ *
+ * @section LICENSE
+ * This source file is subject to the GNU General Public License Version 3 (GPLv3).
+ *
+ * @category Recolize
+ * @package Recolize_RecommendationEngine
+ * @author Recolize GmbH <service@recolize.com>
+ * @copyright 2015 Recolize GmbH (http://www.recolize.com)
+ * @license http://opensource.org/licenses/GPL-3.0 GNU General Public License Version 3 (GPLv3).
+ */
+//-->
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <promo>
+                        <children>
+                            <recolize_recommendation_engine>
+                                <title>Recolize Recommendation Engine</title>
+                            </recolize_recommendation_engine>
+                        </children>
+                    </promo>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <recolize_recommendation_engine translate="title">
+                                        <title>Recolize Recommendation Engine</title>
+                                        <sort_order>200</sort_order>
+                                    </recolize_recommendation_engine>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
