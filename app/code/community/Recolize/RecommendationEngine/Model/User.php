@@ -11,7 +11,7 @@
  * @copyright 2015 Recolize GmbH (http://www.recolize.com)
  * @license http://opensource.org/licenses/GPL-3.0 GNU General Public License Version 3 (GPLv3).
  */
-class Recolize_RecommendationEngine_Block_Userparameter extends Mage_Core_Block_Template
+class Recolize_RecommendationEngine_Model_User extends Mage_Core_Model_Abstract
 {
     /**
      * Customer status for a new customer.
@@ -38,13 +38,31 @@ class Recolize_RecommendationEngine_Block_Userparameter extends Mage_Core_Block_
     }
 
     /**
-     * Get logged in customer id.
+     * Get an encrypted logged in customer id.
      *
-     * @return integer
+     * @return integer|null the encrypted customer id; null, if the customer is not logged in
      */
     public function getCustomerId()
     {
-        return $this->_getCustomerSession()->getId();
+        $internalCustomerId = $this->_getInternalCustomerId();
+
+        if (empty($internalCustomerId) === true) {
+            return $internalCustomerId;
+        }
+
+        return sha1($internalCustomerId);
+    }
+
+    /**
+     * Returns the default customer group.
+     *
+     * @return string the default customer group
+     */
+    public function getDefaultCustomerGroup()
+    {
+        $customerGroupCode = Mage::getModel('customer/group')->load(Mage_Customer_Model_Group::NOT_LOGGED_IN_ID)->getCustomerGroupCode();
+
+        return $this->_replaceSpecialCharacters($customerGroupCode);
     }
 
     /**
@@ -57,7 +75,7 @@ class Recolize_RecommendationEngine_Block_Userparameter extends Mage_Core_Block_
         $customerGroupId = $this->_getCustomerSession()->getCustomerGroupId();
         $customerGroupCode = Mage::getModel('customer/group')->load($customerGroupId)->getCustomerGroupCode();
 
-        return $customerGroupCode;
+        return $this->_replaceSpecialCharacters($customerGroupCode);
     }
 
     /**
@@ -68,16 +86,13 @@ class Recolize_RecommendationEngine_Block_Userparameter extends Mage_Core_Block_
      */
     public function getCustomerStatus()
     {
-        $customerStatus = Mage::getSingleton('recolize_recommendation_engine/session')->getCustomerStatus();
-        if (empty($customerStatus) === false) {
-            return $customerStatus;
-        }
+        $customerStatus = $this->getDefaultCustomerStatus();
 
         if ($this->isCustomerLoggedIn() === true) {
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getResourceModel('sales/order_collection')
                 ->addFieldToSelect('entity_id')
-                ->addFieldToFilter('customer_id', $this->getCustomerId())
+                ->addFieldToFilter('customer_id', $this->_getInternalCustomerId())
                 ->setCurPage(1)
                 ->setPageSize(1)
                 ->getFirstItem();
@@ -86,14 +101,21 @@ class Recolize_RecommendationEngine_Block_Userparameter extends Mage_Core_Block_
             $lastOrderId = Mage::getSingleton('checkout/session')->getLastOrderId();
         }
 
-        $customerStatus = self::STATUS_NEW_CUSTOMER;
-
         if (empty($lastOrderId) === false) {
             $customerStatus = self::STATUS_RETURNING_CUSTOMER;
         }
 
-        Mage::getSingleton('recolize_recommendation_engine/session')->setCustomerStatus($customerStatus);
         return $customerStatus;
+    }
+
+    /**
+     * Returns the default customer status.
+     *
+     * @return string the default customer status
+     */
+    public function getDefaultCustomerStatus()
+    {
+        return self::STATUS_NEW_CUSTOMER;
     }
 
     /**
@@ -104,5 +126,26 @@ class Recolize_RecommendationEngine_Block_Userparameter extends Mage_Core_Block_
     protected function _getCustomerSession()
     {
         return Mage::getSingleton('customer/session');
+    }
+
+    /**
+     * Returns the Magento internal customer id if the customer is logged in.
+     *
+     * @return integer|null the internal Magento customer id; null if not available/not logged in
+     */
+    protected function _getInternalCustomerId()
+    {
+        return $this->_getCustomerSession()->getId();
+    }
+
+    /**
+     * Replaces special characters in a given string.
+     *
+     * @param string $text the text with possible special characters
+     * @return string a cleaned text
+     */
+    protected function _replaceSpecialCharacters($text)
+    {
+        return str_replace('\'', '', $text);
     }
 }
