@@ -42,6 +42,11 @@ class Recolize_RecommendationEngine_Model_Feed extends Mage_Core_Model_Abstract
         foreach ($this->getFeedProfileCollection() as $profileModel) {
             /** @var Mage_DataFlow_Model_Profile $profileModel */
             try {
+                //The dataflow core module always uses getSingleton for the dataflow batch model instance.
+                //Therefore we have to remove the existing instance with every profile run, because otherwise
+                //the dataflow batch ids for the different profile runs keep the same, and the whole data of
+                //all profile runs get aggregated with every next profile run (within one cron run).
+                Mage::unregister('_singleton/dataflow/batch');
                 $profileModel->run();
             } catch (Exception $exception) {
                 Mage::logException($exception);
@@ -62,6 +67,18 @@ class Recolize_RecommendationEngine_Model_Feed extends Mage_Core_Model_Abstract
     public function getFeedFilename(Mage_Core_Model_Store $store)
     {
         return sprintf('product-export-%s.csv', md5($store->getId() . '#' . $store->getName() . '#' . $store->getCode()) . '-' . $store->getCode());
+    }
+
+    /**
+     * Return a unique name for the DataFlow profile for the given store.
+     *
+     * @param Mage_Core_Model_Store $store
+     *
+     * @return string
+     */
+    public function getFeedProfileName(Mage_Core_Model_Store $store)
+    {
+        return self::DATAFLOW_PROFILE_NAME_PREFIX . ' ' . $store->getName() . '/' . $store->getCode();
     }
 
     /**
