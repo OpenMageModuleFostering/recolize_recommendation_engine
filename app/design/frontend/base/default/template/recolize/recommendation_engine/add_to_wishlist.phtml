@@ -13,11 +13,14 @@
  */
 ?>
 <?php if (Mage::getStoreConfigFlag('recolize_recommendation_engine/general/enable_extension') === true): ?>
-    <?php $currentProductId = Mage::registry('current_product')->getId(); ?>
+    <?php if (Mage::getSingleton('recolize_recommendation_engine/session')->getIsProductAddedToWishlist() === true): ?>
 
     <script type="text/javascript">
         var RecolizeParameters = RecolizeParameters || {};
-        RecolizeParameters['specialPageType'] = 'item-detail';
-        RecolizeParameters['currentItemId'] = '<?php echo $currentProductId ?>';
+        RecolizeParameters['itemAction'] = 'add_to_wishlist';
+        RecolizeParameters['clickedItemId'] = '<?php echo Mage::getModel('recolize_recommendation_engine/session')->getProductIdInWishlist(); ?>';
     </script>
+
+    <?php Mage::getSingleton('recolize_recommendation_engine/session')->clearAddToWishlistData(); ?>
+    <?php endif; ?>
 <?php endif; ?>
