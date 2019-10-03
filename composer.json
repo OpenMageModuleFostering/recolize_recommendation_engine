@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/recolize_recommendation_engine",
+    "name": "OpenMageModuleFostering\/recolize_recommendation_engine",
     "type": "magento-module",
     "license": "GNU-General-Public-License-(GPL)",
     "homepage": "",
     "description": "The Recolize Recommendation Engine generates personalized product recommendations.",
     "authors": [
-    {
-        "name": "Recolize GmbH",
-        "email": "admin@recolize.com"
-    }
-],
+        {
+            "name": "Recolize GmbH",
+            "email": "admin@recolize.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
